@@ -12,11 +12,11 @@ from prophet import Prophet
 # @st.cache_data()
 def fetch_data(symbol):
 
-    data = yf.download(symbol, period='3mo', interval='1h')
+    data = yf.download(symbol, period='3mo', interval='1h',multi_level_index=False)
     data.reset_index(inplace=True)
     # Convert to IST
     data['Datetime'] = data['Datetime'] + pd.Timedelta(hours=5, minutes=30)
-    df = data.drop([ 'Adj Close', 'Volume'], axis=1)
+    df = data.drop([ 'Volume'], axis=1)
     return df
 
 
@@ -69,9 +69,8 @@ def predict_next_prices(model, scaler, dataset):
     return next_predictions
 
 st.title("Live Stock Price Prediction")
-
 symbol = st.text_input("Enter stock symbol (e.g., BTC-USD):", value='BTC-USD')
-
+st.write("Predictions are based on the last 90 days of trained data with 1 hour timeframe. Please remember that crypto markets are unpredictable.")
 if st.button("Fetch Data"):
     data = fetch_data(symbol)
     df=data.copy()

@@ -19,12 +19,12 @@ app = Flask(__name__)
 import tensorflow as tf
 
 def fetch_data(symbol):
-    data = yf.download(symbol, period='3mo', interval='1h')
+    data = yf.download(symbol, period='3mo', interval='1h',multi_level_index=False)
     if data.empty:
         return 'error'
     data.reset_index(inplace=True)
     data['Datetime'] = data['Datetime'] + pd.Timedelta(hours=5, minutes=30)
-    return data.drop(['Adj Close', 'Volume'], axis=1)
+    return data.drop('Volume', axis=1)
 
 
 def predict_prophet(data):
